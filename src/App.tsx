@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './App.css'
+import Places from './pages/Places'
 
 const categories = [
   { icon: '🍜', name: '맛집' },
@@ -39,7 +40,7 @@ function App() {
         <div className="header-inner">
           <div className="logo">📍 Tianjin Mate</div>
           <nav>
-            <a href="#categories">장소 찾기</a>
+            <a href="#places">장소 찾기</a>
             <a href="#guides">생활 가이드</a>
           </nav>
         </div>
@@ -121,6 +122,7 @@ function App() {
             ))}
           </div>
         </section>
+        <Places />
       </main>
 
       <footer className="footer">
