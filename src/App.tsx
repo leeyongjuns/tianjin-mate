@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import './App.css'
 import Places from './pages/Places'
+import type { Place } from './types/place'
+import PlaceDetail from './pages/PlaceDetail'
 
 const categories = [
   { icon: '🍜', name: '맛집' },
@@ -33,6 +35,8 @@ const guides = [
 
 function App() {
   const [search, setSearch] = useState('')
+  const [category, setCategory] = useState('전체')
+  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null)
 
   return (
     <div className="app">
@@ -40,13 +44,44 @@ function App() {
         <div className="header-inner">
           <div className="logo">📍 Tianjin Mate</div>
           <nav>
-            <a href="#places">장소 찾기</a>
+          <a
+  href="#places"
+  onClick={(e) => {
+    if (selectedPlace) {
+      e.preventDefault()
+      setSelectedPlace(null)
+
+      requestAnimationFrame(() => {
+        document.getElementById('places')?.scrollIntoView({
+          behavior: 'smooth',
+        })
+      })
+    }
+  }}
+>
+  장소 찾기
+</a>
             <a href="#guides">생활 가이드</a>
           </nav>
         </div>
       </header>
 
       <main>
+      {selectedPlace ? (
+  <PlaceDetail
+    place={selectedPlace}
+    onBack={() => {
+      setSelectedPlace(null)
+
+      requestAnimationFrame(() => {
+        document.getElementById('places')?.scrollIntoView({
+          behavior: 'smooth',
+        })
+      })
+    }}
+  />
+) : (
+  <>
         <section className="hero-section">
           <div className="hero-content">
             <span className="hero-tag">天津 · TIANJIN</span>
@@ -72,15 +107,17 @@ function App() {
                 onChange={(e) => setSearch(e.target.value)}
               />
               <button
-                type="button"
-                onClick={() => {
-                  if (search.trim()) {
-                    alert(`"${search}" 검색 기능은 곧 추가할 예정입니다.`)
-                  }
-                }}
-              >
-                검색
-              </button>
+  type="button"
+  onClick={() => {
+    setCategory('전체')
+
+    document.getElementById('places')?.scrollIntoView({
+      behavior: 'smooth',
+    })
+  }}
+>
+  검색
+</button>
             </div>
           </div>
         </section>
@@ -97,7 +134,14 @@ function App() {
                 type="button"
                 className="category-card"
                 key={category.name}
-                onClick={() => setSearch(category.name)}
+                onClick={() => {
+                  setSearch('')
+                  setCategory(category.name)
+                
+                  document.getElementById('places')?.scrollIntoView({
+                    behavior: 'smooth',
+                  })
+                }}
               >
                 <span className="category-icon">{category.icon}</span>
                 <span>{category.name}</span>
@@ -122,7 +166,18 @@ function App() {
             ))}
           </div>
         </section>
-        <Places />
+        <Places
+  search={search}
+  setSearch={setSearch}
+  category={category}
+  setCategory={setCategory}
+  onSelectPlace={(place) => {
+    setSelectedPlace(place)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }}
+/>
+  </>
+)}
       </main>
 
       <footer className="footer">

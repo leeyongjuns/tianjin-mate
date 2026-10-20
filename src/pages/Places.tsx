@@ -1,29 +1,51 @@
+
 import { useState } from 'react'
 import { places } from '../data/places'
+import { districts } from '../data/districts'
 import PlaceCard from '../components/PlaceCard'
+import type { Place } from '../types/place'
 
-function Places() {
-  const [search, setSearch] = useState('')
-  const [category, setCategory] = useState('전체')
+interface PlacesProps {
+  onSelectPlace: (place: Place) => void
+  search: string
+  setSearch: (value: string) => void
+  category: string
+  setCategory: (value: string) => void
+}
 
+function Places({
+  onSelectPlace,
+  search,
+  setSearch,
+  category,
+  setCategory,
+}: PlacesProps) {
+  // 선택한 지역 상태
+  const [selectedDistrict, setSelectedDistrict] = useState('전체')
+
+  // 장소 카테고리 목록
   const categories = [
     '전체',
     ...new Set(places.map((place) => place.category)),
   ]
 
+  // 검색어 + 카테고리 + 지역 필터
   const filteredPlaces = places.filter((place) => {
     const keyword = search.trim().toLowerCase()
 
     const matchesSearch =
       place.nameKo.toLowerCase().includes(keyword) ||
       place.nameZh.toLowerCase().includes(keyword) ||
-      place.district.toLowerCase().includes(keyword) ||
-      place.description.toLowerCase().includes(keyword)
+      place.district.toLowerCase().includes(keyword)
 
     const matchesCategory =
       category === '전체' || place.category === category
 
-    return matchesSearch && matchesCategory
+    const matchesDistrict =
+      selectedDistrict === '전체' ||
+      place.district === selectedDistrict
+
+    return matchesSearch && matchesCategory && matchesDistrict
   })
 
   return (
@@ -33,6 +55,7 @@ function Places() {
         <p>한국어와 중국어로 장소를 검색해 보세요.</p>
       </div>
 
+      {/* 검색창 */}
       <div className="places-search">
         <input
           type="search"
@@ -42,6 +65,7 @@ function Places() {
         />
       </div>
 
+      {/* 카테고리 필터 */}
       <div className="places-filters">
         {categories.map((item) => (
           <button
@@ -55,19 +79,50 @@ function Places() {
         ))}
       </div>
 
+      {/* 지역별 필터 */}
+      <div className="district-filter">
+        <label htmlFor="district-select">지역 선택</label>
+
+        <select
+          id="district-select"
+          value={selectedDistrict}
+          onChange={(e) => setSelectedDistrict(e.target.value)}
+        >
+          {districts.map((district) => (
+            <option
+              key={district.nameZh}
+              value={
+                district.nameZh === '全部'
+                  ? '전체'
+                  : district.nameZh
+              }
+            >
+              {district.nameKo} ({district.nameZh})
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* 검색 결과 개수 */}
       <p className="places-count">
         검색 결과 {filteredPlaces.length}개
       </p>
 
+      {/* 장소 카드 목록 */}
       <div className="places-grid">
         {filteredPlaces.map((place) => (
-          <PlaceCard key={place.id} place={place} />
+          <PlaceCard
+            key={place.id}
+            place={place}
+            onSelect={onSelectPlace}
+          />
         ))}
       </div>
 
+      {/* 검색 결과 없음 */}
       {filteredPlaces.length === 0 && (
         <p className="places-empty">
-          검색 결과가 없습니다. 다른 검색어를 입력해 보세요.
+          검색 결과가 없습니다. 다른 검색어나 지역을 선택해 보세요.
         </p>
       )}
     </section>

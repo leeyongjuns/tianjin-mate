@@ -346,3 +346,109 @@ nav a {
     grid-template-columns: 1fr;
   }
 }
+/* 장소 상세 페이지 */
+
+.back-button {
+  background: transparent;
+  border: none;
+  color: #0f766e;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 12px 0;
+  margin-bottom: 20px;
+}
+
+.detail-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 36px;
+}
+
+.detail-card h1 {
+  font-size: 32px;
+  margin: 18px 0 8px;
+}
+
+.detail-card h2 {
+  font-size: 19px;
+  margin-top: 28px;
+}
+
+.detail-card p {
+  color: #475569;
+  line-height: 1.8;
+}
+
+.detail-divider {
+  height: 1px;
+  background: #e2e8f0;
+  margin: 28px 0;
+}
+
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.detail-actions button {
+  border: none;
+  border-radius: 10px;
+  padding: 14px 20px;
+  background: #0f766e;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.detail-actions button:hover {
+  background: #115e59;
+}
+
+@media (max-width: 768px) {
+  .detail-card {
+    padding: 24px;
+  }
+
+  .detail-card h1 {
+    font-size: 26px;
+  }
+}
+/* 지역 선택 필터 */
+
+.district-filter {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.district-filter label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.district-filter select {
+  padding: 12px 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: white;
+  color: #334155;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.district-filter select:focus {
+  outline: 2px solid #0f766e;
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .district-filter {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
