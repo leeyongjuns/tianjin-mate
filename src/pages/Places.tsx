@@ -1,6 +1,5 @@
 
-import { useState } from 'react'
-import { places } from '../data/places'
+import { useEffect, useState } from 'react'
 import { districts } from '../data/districts'
 import PlaceCard from '../components/PlaceCard'
 import type { Place } from '../types/place'
@@ -20,16 +19,56 @@ function Places({
   category,
   setCategory,
 }: PlacesProps) {
-  // 선택한 지역 상태
+  const [places, setPlaces] = useState<Place[]>([])
   const [selectedDistrict, setSelectedDistrict] = useState('전체')
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
-  // 장소 카테고리 목록
+  // FastAPI 서버에서 장소 목록 가져오기
+  useEffect(() => {
+    const controller = new AbortController()
+
+    async function fetchPlaces() {
+      setLoading(true)
+      setError('')
+
+      try {
+        const response = await fetch(
+          'http://localhost:8000/api/places',
+          { signal: controller.signal }
+        )
+
+        if (!response.ok) {
+          throw new Error('장소 데이터를 불러오지 못했습니다.')
+        }
+
+        const data: Place[] = await response.json()
+        setPlaces(data)
+      } catch (err) {
+        if (controller.signal.aborted) return
+
+        setError(
+          err instanceof Error
+            ? err.message
+            : '알 수 없는 오류가 발생했습니다.'
+        )
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false)
+        }
+      }
+    }
+
+    fetchPlaces()
+
+    return () => controller.abort()
+  }, [])
+
   const categories = [
     '전체',
     ...new Set(places.map((place) => place.category)),
   ]
 
-  // 검색어 + 카테고리 + 지역 필터
   const filteredPlaces = places.filter((place) => {
     const keyword = search.trim().toLowerCase()
 
@@ -55,7 +94,6 @@ function Places({
         <p>한국어와 중국어로 장소를 검색해 보세요.</p>
       </div>
 
-      {/* 검색창 */}
       <div className="places-search">
         <input
           type="search"
@@ -65,7 +103,6 @@ function Places({
         />
       </div>
 
-      {/* 카테고리 필터 */}
       <div className="places-filters">
         {categories.map((item) => (
           <button
@@ -79,7 +116,6 @@ function Places({
         ))}
       </div>
 
-      {/* 지역별 필터 */}
       <div className="district-filter">
         <label htmlFor="district-select">지역 선택</label>
 
@@ -103,27 +139,36 @@ function Places({
         </select>
       </div>
 
-      {/* 검색 결과 개수 */}
-      <p className="places-count">
-        검색 결과 {filteredPlaces.length}개
-      </p>
-
-      {/* 장소 카드 목록 */}
-      <div className="places-grid">
-        {filteredPlaces.map((place) => (
-          <PlaceCard
-            key={place.id}
-            place={place}
-            onSelect={onSelectPlace}
-          />
-        ))}
-      </div>
-
-      {/* 검색 결과 없음 */}
-      {filteredPlaces.length === 0 && (
-        <p className="places-empty">
-          검색 결과가 없습니다. 다른 검색어나 지역을 선택해 보세요.
+      {loading ? (
+        <p className="places-count">장소 정보를 불러오는 중...</p>
+      ) : error ? (
+        <p className="places-empty" role="alert">
+          {error}
+          <br />
+          FastAPI 서버가 실행 중인지 확인해 주세요.
         </p>
+      ) : (
+        <>
+          <p className="places-count">
+            검색 결과 {filteredPlaces.length}개
+          </p>
+
+          <div className="places-grid">
+            {filteredPlaces.map((place) => (
+              <PlaceCard
+                key={place.id}
+                place={place}
+                onSelect={onSelectPlace}
+              />
+            ))}
+          </div>
+
+          {filteredPlaces.length === 0 && (
+            <p className="places-empty">
+              검색 결과가 없습니다.
+            </p>
+          )}
+        </>
       )}
     </section>
   )
