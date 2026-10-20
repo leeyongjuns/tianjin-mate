@@ -6,6 +6,8 @@ import psycopg
 from psycopg.rows import dict_row
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from app.users import router as users_router
+from app.auth import router as auth_router
 
 app = FastAPI(
     title="Tianjin Mate API",
@@ -16,10 +18,12 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
-    allow_methods=["GET"],
+    allow_credentials=True,
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
-
+app.include_router(users_router)
+app.include_router(auth_router)
 
 def get_connection():
     return psycopg.connect(
