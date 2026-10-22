@@ -672,3 +672,275 @@ button.logo:focus-visible {
   white-space: pre-line;
   font-size: 14px;
 }
+
+
+/* 관리자 장소 심사 페이지 */
+
+.admin-submissions {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+.admin-submissions > h1 {
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #1f2937;
+}
+
+.admin-submissions > p {
+  color: #6b7280;
+  margin-bottom: 28px;
+}
+
+.admin-submissions .auth-card {
+  width: 100%;
+  max-width: none;
+  padding: 28px;
+  margin-bottom: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.admin-submissions .auth-card h2 {
+  font-size: 22px;
+  margin-bottom: 18px;
+  color: #111827;
+}
+
+.admin-submissions .auth-card p {
+  font-size: 14px;
+  line-height: 1.8;
+  margin-bottom: 8px;
+  color: #4b5563;
+}
+
+.admin-submissions .auth-card button {
+  padding: 11px 22px;
+  margin-top: 20px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.admin-submissions .auth-card button:first-of-type {
+  background: #2563eb;
+  color: white;
+}
+
+.admin-submissions .auth-card button:first-of-type:hover {
+  background: #1d4ed8;
+}
+
+.admin-submissions .auth-card button:last-of-type {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.admin-submissions .auth-card button:last-of-type:hover {
+  background: #fecaca;
+}
+
+@media (max-width: 600px) {
+  .admin-submissions {
+    padding: 28px 16px 60px;
+  }
+
+  .admin-submissions .auth-card {
+    padding: 20px;
+  }
+}
+
+/* 관리자 심사 버튼 처리 중 상태 */
+
+.admin-submissions .auth-card button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.admin-submissions .auth-card button:disabled:hover {
+  filter: none;
+}
+
+/* 관리자 심사 카드 모바일 버튼 */
+
+@media (max-width: 600px) {
+  .admin-submissions .auth-card button {
+    width: 100%;
+    margin-right: 0;
+    margin-top: 10px;
+  }
+}
+
+/* 관리자 승인 대기 건수 */
+
+.admin-submissions-count {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 14px;
+  color: #1e40af;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.admin-submissions-count strong {
+  font-size: 24px;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+/* 관리자 심사 새로고침 영역 */
+
+.admin-submissions-toolbar {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.admin-submissions-toolbar .admin-submissions-count {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.admin-refresh-button {
+  padding: 12px 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-refresh-button:hover:not(:disabled) {
+  background: #f3f4f6;
+}
+
+.admin-refresh-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .admin-submissions-toolbar {
+    flex-direction: column;
+  }
+}
+
+/* 관리자 심사 빈 목록 안내 */
+
+.admin-empty-state {
+  padding: 64px 24px;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+}
+
+.admin-empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.admin-empty-state h2 {
+  margin-bottom: 12px;
+  font-size: 20px;
+  color: #111827;
+}
+
+.admin-empty-state p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+/* 관리자 심사 카드 상단 */
+
+.admin-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.admin-card-header h2 {
+  margin: 0 0 6px;
+}
+
+.admin-card-name-zh {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.admin-pending-badge {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  background: #fef3c7;
+  color: #92400e;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* 관리자 심사 카드 상세 정보 */
+
+.admin-card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px 0;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-card-info-row {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  align-items: start;
+  gap: 16px;
+}
+
+.admin-card-info-row span {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.admin-card-info-row strong {
+  color: #1f2937;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+  .admin-card-info-row {
+    grid-template-columns: 85px minmax(0, 1fr);
+    gap: 10px;
+  }
+}
