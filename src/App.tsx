@@ -6,6 +6,9 @@ import type { Place } from './types/place'
 import PlaceDetail from './pages/PlaceDetail'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import SubmitPlace from './pages/SubmitPlace'
+import AdminSubmissions from './pages/AdminSubmissions'
+import MySubmissions from './pages/MySubmissions'
 
 type User = {
   id: number
@@ -48,11 +51,14 @@ function App() {
   const [category, setCategory] = useState('전체')
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null)
 
-  // 로그인 및 회원가입 화면
+  // 화면 전환 상태
   const [showLogin, setShowLogin] = useState(false)
   const [showRegister, setShowRegister] = useState(false)
+  const [showSubmitPlace, setShowSubmitPlace] = useState(false)
+  const [showAdminSubmissions, setShowAdminSubmissions] = useState(false)
+  const [showMySubmissions, setShowMySubmissions] = useState(false)
 
-  // 현재 로그인한 사용자
+  // 로그인한 사용자
   const [user, setUser] = useState<User | null>(null)
 
   // 새로고침 후 로그인 상태 복원
@@ -93,11 +99,14 @@ function App() {
     return () => controller.abort()
   }, [])
 
-  // 장소 찾기로 이동
+  // 장소 찾기 화면 이동
   function goToPlaces() {
     setShowLogin(false)
     setShowRegister(false)
+    setShowSubmitPlace(false)
     setSelectedPlace(null)
+    setShowAdminSubmissions(false)
+    setShowMySubmissions(false)
 
     requestAnimationFrame(() => {
       document.getElementById('places')?.scrollIntoView({
@@ -106,11 +115,14 @@ function App() {
     })
   }
 
-  // 생활 가이드로 이동
+  // 생활 가이드 화면 이동
   function goToGuides() {
     setShowLogin(false)
     setShowRegister(false)
+    setShowSubmitPlace(false)
     setSelectedPlace(null)
+    setShowAdminSubmissions(false)
+    setShowMySubmissions(false)
 
     requestAnimationFrame(() => {
       document.getElementById('guides')?.scrollIntoView({
@@ -123,7 +135,28 @@ function App() {
   function openLogin() {
     setSelectedPlace(null)
     setShowRegister(false)
+    setShowSubmitPlace(false)
     setShowLogin(true)
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+  }
+
+  // 장소 등록 신청 화면 열기
+  function openSubmitPlace() {
+    if (!user) {
+      openLogin()
+      return
+    }
+
+    setSelectedPlace(null)
+    setShowLogin(false)
+    setShowRegister(false)
+    setShowMySubmissions(false)
+    setShowAdminSubmissions(false)
+    setShowSubmitPlace(true)
 
     window.scrollTo({
       top: 0,
@@ -149,7 +182,10 @@ function App() {
       setUser(null)
       setShowLogin(false)
       setShowRegister(false)
+      setShowSubmitPlace(false)
       setSelectedPlace(null)
+      setShowAdminSubmissions(false)
+      setShowMySubmissions(false)
 
       window.scrollTo({
         top: 0,
@@ -164,7 +200,25 @@ function App() {
     <div className="app">
       <header className="header">
         <div className="header-inner">
-          <div className="logo">📍 Tianjin Mate</div>
+        <button
+  type="button"
+  className="logo"
+  onClick={() => {
+    setSelectedPlace(null)
+    setShowLogin(false)
+    setShowRegister(false)
+    setShowSubmitPlace(false)
+    setShowAdminSubmissions(false)
+    setShowMySubmissions(false)
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+  }}
+>
+  📍 Tianjin Mate
+</button>
 
           <nav>
             <a
@@ -187,8 +241,53 @@ function App() {
               생활 가이드
             </a>
 
+            {/* 로그인한 회원에게 장소 등록 버튼 표시 */}
+           
+
             {user ? (
               <>
+              
+<button
+  type="button"
+  onClick={() => {
+    setShowMySubmissions(true)
+    setShowAdminSubmissions(false)
+    setShowLogin(false)
+    setShowRegister(false)
+    setShowSubmitPlace(false)
+    setSelectedPlace(null)
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+  }}
+>
+  내 신청 내역
+</button>
+
+
+{user.role === 'admin' && (
+  <button
+    type="button"
+    onClick={() => {
+      setShowAdminSubmissions(true)
+      setShowMySubmissions(false)
+      setShowLogin(false)
+      setShowRegister(false)
+      setShowSubmitPlace(false)
+      setSelectedPlace(null)
+
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      })
+    }}
+  >
+    장소 심사
+  </button>
+)}
+
                 <span>
                   {user.nickname || user.username}님
                   {user.role === 'admin' ? ' (관리자)' : ''}
@@ -213,8 +312,53 @@ function App() {
         </div>
       </header>
 
+      
+
       <main>
-        {showRegister ? (
+  {/* 내 신청 내역 페이지 */}
+  {showMySubmissions && user ? (
+    <MySubmissions
+      onBack={() => {
+        setShowMySubmissions(false)
+
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth',
+        })
+      }}
+    />
+
+  /* 관리자 장소 심사 페이지 */
+  ) : showAdminSubmissions && user?.role === 'admin' ? (
+    <AdminSubmissions />
+
+
+  /* 장소 등록 신청 페이지 */
+  ) : showSubmitPlace && user ? (
+    
+<SubmitPlace
+  onBack={() => {
+    setShowSubmitPlace(false)
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+  }}
+  onViewMySubmissions={() => {
+    setShowSubmitPlace(false)
+    setShowMySubmissions(true)
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+  }}
+/>
+
+
+        /* 회원가입 페이지 */
+        ) : showRegister ? (
           <Register
             onBack={() => {
               setShowRegister(false)
@@ -227,12 +371,15 @@ function App() {
               alert('회원가입이 완료되었습니다. 로그인해 주세요.')
             }}
           />
+
+        /* 로그인 페이지 */
         ) : showLogin ? (
           <Login
             onLogin={(loggedInUser) => {
               setUser(loggedInUser)
               setShowLogin(false)
               setShowRegister(false)
+              setShowSubmitPlace(false)
 
               window.scrollTo({
                 top: 0,
@@ -253,11 +400,15 @@ function App() {
               })
             }}
           />
+
+        /* 장소 상세 페이지 */
         ) : selectedPlace ? (
           <PlaceDetail
             place={selectedPlace}
             onBack={goToPlaces}
           />
+
+        /* 홈페이지 */
         ) : (
           <>
             {/* 메인 배너 */}
@@ -375,21 +526,32 @@ function App() {
               </div>
             </section>
 
-            {/* 장소 검색 */}
-            <Places
-              search={search}
-              setSearch={setSearch}
-              category={category}
-              setCategory={setCategory}
-              onSelectPlace={(place) => {
-                setSelectedPlace(place)
+            {/* 장소 등록 버튼 */}
+<div className="place-submit-area">
+  <button
+    type="button"
+    className="place-submit-button"
+    onClick={openSubmitPlace}
+  >
+    + 장소 등록하기
+  </button>
+</div>
 
-                window.scrollTo({
-                  top: 0,
-                  behavior: 'smooth',
-                })
-              }}
-            />
+{/* 장소 검색 */}
+<Places
+  search={search}
+  setSearch={setSearch}
+  category={category}
+  setCategory={setCategory}
+  onSelectPlace={(place) => {
+    setSelectedPlace(place)
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+  }}
+/>
           </>
         )}
       </main>
